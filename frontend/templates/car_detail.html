@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Car Detail{% endblock %}
+{% block content %}
+<h1>{{ car.make }} {{ car.model }} ({{ car.year }})</h1>
+<p>{{ car.description }}</p>
+<p>Owner: {{ car.owner }}</p>
+
+{% if user == car.owner %}
+<a href="/cars/{{ car.id }}/edit/">Edit Car</a> |
+<a href="/cars/{{ car.id }}/delete/">Delete Car</a>
+{% endif %}
+
+<h2>Comments</h2>
+<ul>
+    {% for comment in comments %}
+    <li>{{ comment.author }}: {{ comment.content }}</li>
+    {% endfor %}
+</ul>
+
+{% if user.is_authenticated %}
+<h3>Add a Comment</h3>
+<form action="/cars/{{ car.id }}/comments/" method="post">
+    {% csrf_token %}
+    <textarea name="content" rows="4" required></textarea><br>
+    <button type="submit">Add Comment</button>
+</form>
+{% else %}
+<p><a href="/login/">Login</a> to add a comment.</p>
+{% endif %}
+{% endblock %}
